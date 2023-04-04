@@ -1,6 +1,6 @@
 -- Onboarding Task - Part 1
 
---- a. Display a list of all property names and their property id’s for Owner Id: 1426. 
+--- a. Display a list of all property names and their property idâ€™s for Owner Id: 1426. 
 
 SELECT	Property.Name, Property.Id
 
@@ -18,7 +18,7 @@ FROM	[dbo].[PropertyHomeValue]
 WHERE	PropertyId IN 
 						(SELECT Property.Id
 						FROM [dbo].[Property] INNER JOIN [dbo].[OwnerProperty]
-						ON Property.Id = OwnerProperty.PropertyId
+							ON Property.Id = OwnerProperty.PropertyId
 						WHERE OwnerProperty.OwnerId = 1426 )
 		AND  [HomeValueTypeId]= 1
 		AND [IsActive] = 1
@@ -74,3 +74,27 @@ FROM	[dbo].[Property] INNER JOIN [dbo].[OwnerProperty]
 			ON TenantPaymentFrequencies.Id = TenantProperty.PaymentFrequencyId
 
 WHERE OwnerProperty.OwnerId = 1426 
+
+-- Onboarding Task - Part 2
+
+SELECT	Property.Name AS Property_Name, 
+		Property.Id AS PropertyId, 
+		OwnerProperty.OwnerId, 
+		Person.FirstName AS OwnerName, 
+		CONCAT(Address.Number, ' ', Address.Street, ', ', Address.Suburb, ', ', Address.Region)  AS Property_Address, 
+		Property.Bedroom, 
+		Property.Bathroom, 
+		TenantPaymentFrequencies.Name AS Frequency, 
+		PropertyExpense.Amount AS ExpenseAmount, 
+		PropertyExpense.Date AS ExpenseDate, 
+        PropertyExpense.Description AS ExpenseDescription, 
+		PropertyRentalPayment.Amount AS RentPayment
+
+FROM     PropertyRentalPayment INNER JOIN
+                  Property ON PropertyRentalPayment.PropertyId = Property.Id INNER JOIN
+                  TenantPaymentFrequencies ON PropertyRentalPayment.FrequencyType = TenantPaymentFrequencies.Id INNER JOIN
+                  OwnerProperty INNER JOIN
+                  Person ON OwnerProperty.OwnerId = Person.Id ON Property.Id = OwnerProperty.PropertyId INNER JOIN
+                  Address ON Property.AddressId = Address.AddressId INNER JOIN
+                  PropertyExpense ON Property.Id = PropertyExpense.PropertyId
+
